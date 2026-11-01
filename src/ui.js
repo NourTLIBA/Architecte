@@ -1,5 +1,5 @@
 import {
-  PROJECT, LEVELS, SITE, ENERGY, LAYERS, TYPE_COLORS, TYPE_LABELS, TYPE_FLOWS, TYPE_ENERGY, TYPOLOGIES,
+  PROJECT, LEVELS, SITE, ENERGY, GROUPS, TYPE_COLORS, TYPE_LABELS, TYPE_FLOWS, TYPE_ENERGY, TYPOLOGIES,
   allZones, zoneArea, footprintArea, gfa,
 } from './data.js';
 
@@ -28,9 +28,8 @@ export function markLevel(idx) {
 }
 
 export function renderLegend() {
-  $('#legend-list').innerHTML = Object.keys(TYPE_COLORS)
-    .filter(t => t !== 'circulation')
-    .map(t => `<li><span class="sw" style="background:${hex(TYPE_COLORS[t])}"></span>${TYPE_LABELS[t]}</li>`).join('');
+  $('#legend-list').innerHTML = [...GROUPS.map(g => [g.color, g.label]), [TYPE_COLORS.noyau, 'Noyaux et circulations']]
+    .map(([c, l]) => `<li><span class="sw" style="background:${hex(c)}"></span>${l}</li>`).join('');
 }
 
 // ---------------------------------------------------------------- zone card (inside the sim)

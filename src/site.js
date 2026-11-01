@@ -29,6 +29,8 @@ export function buildSite() {
   const stats = { visitors: 0, staff: 0, pmr: 0 };
   const pv = new THREE.Group(); // parking shade structures (energy layer)
   root.add(pv);
+  const siteDims = new THREE.Group(); // plot lengths, shown with the dimensions toggle
+  root.add(siteDims);
 
   // ---- plot
   const poly3 = SITE.polygon.map(([x, z]) => [x, 0.03, z]);
@@ -44,7 +46,7 @@ export function buildSite() {
   add(label(['LIMITE PARCELLE', `${polyArea(SITE.polygon).toFixed(0)} m²`], cx, 0.2, cz + 10, 'lbl site'));
   SITE.polygon.forEach((p, i) => {
     const q = SITE.polygon[(i + 1) % SITE.polygon.length];
-    add(label(`${Math.hypot(q[0] - p[0], q[1] - p[1]).toFixed(1)}`, (p[0] + q[0]) / 2, 0.3, (p[1] + q[1]) / 2, 'dimtxt'));
+    siteDims.add(label(`${Math.hypot(q[0] - p[0], q[1] - p[1]).toFixed(1)}`, (p[0] + q[0]) / 2, 0.3, (p[1] + q[1]) / 2, 'dimtxt'));
   });
 
   // ---- road
@@ -58,7 +60,7 @@ export function buildSite() {
   const seaFront = SITE.seaZ;
   add(rect(-320, seaFront - 220, 320, seaFront, 0.0, 0x1f6fb5, 0.22, 0.4));
   const hatch = [];
-  for (let z = seaFront - 4; z > seaFront - 220; z -= 8) hatch.push([-320, 0.01, z], [320, 0.01, z]);
+  for (let z = seaFront - 4; z > seaFront - 220; z -= 16) hatch.push([-320, 0.01, z], [320, 0.01, z]);
   add(segs(hatch, 0x5aa5e0, 0.35));
   add(rect(-320, seaFront, 320, seaFront + 14, 0.0, 0xd8c27a, 0.1, 0.5));
   add(label('MER MÉDITERRANÉE', 0, 0.3, seaFront - 24, 'sealbl'));
@@ -84,7 +86,6 @@ export function buildSite() {
   // fire lane (dashed) around the building
   const f = SITE.fireLoop;
   add(poly([[f.x0, 0.05, f.z0], [f.x1, 0.05, f.z0], [f.x1, 0.05, f.z1], [f.x0, 0.05, f.z1], [f.x0, 0.05, f.z0]], col('SECURITE'), { width: 3, dashed: true, dash: 3, gap: 2 }));
-  add(label('VOIE POMPIERS 4 m', f.x0 + 4, 0.3, f.z0 - 2.4, 'sitelbl'));
 
   // ---- parking
   const stallLines = [], pmrRects = [];
@@ -100,7 +101,7 @@ export function buildSite() {
     });
     const len = n * 2.5;
     // PV shade structure
-    pv.add(rect(b.x0, b.z0, b.x1, b.z0 + len, 3.3, col('ENERGIE'), 0.1, 0.8));
+    pv.add(rect(b.x0, b.z0, b.x1, b.z0 + len, 3.3, col('ENERGIE'), 0.06, 0.6));
     const posts = [];
     for (let z = b.z0; z <= b.z0 + len + 0.1; z += 10) [b.x0, b.x1].forEach(x => posts.push([x, 0, z], [x, 3.3, z]));
     pv.add(segs(posts, col('ENERGIE'), 0.7));
@@ -110,7 +111,7 @@ export function buildSite() {
     pv.add(segs(cells, col('ENERGIE'), 0.3));
   });
   add(segs(stallLines, col('PARKING'), 0.8));
-  pmrRects.forEach(r => add(rect(r[0], r[1], r[2], r[3], 0.06, 0x2a6bff, 0.45, 1)));
+  pmrRects.forEach(r => add(rect(r[0], r[1], r[2], r[3], 0.06, 0x0058a3, 0.45, 1)));
 
   // ---- garden + sensory loop
   const g = SITE.garden;
@@ -121,17 +122,15 @@ export function buildSite() {
     loop.push([1 + Math.cos(t) * 26, 0.06, -43.8 + Math.sin(t) * 2.8 + Math.sin(t * 5) * 0.5]);
   }
   add(poly(loop, col('PAYSAGE'), { width: 2.5 }));
-  add(label(['JARDIN THÉRAPEUTIQUE', 'parcours sensoriel'], 1, 0.3, -43.8, 'lbl site'));
 
   // ---- outdoor ergotherapy
   const e = SITE.ergoOut;
-  add(rect(e.x0, e.z0, e.x1, e.z1, 0.03, 0xf0a030, 0.08, 0.8));
-  [0, 1, 2].forEach(i => add(box(e.x0 + 1, 0, e.z0 + 1 + i * 0.9, e.x0 + 4, 0.18 * (i + 1), e.z0 + 1.9 + i * 0.9, 0xf0a030, 0.3, 1)));
+  add(rect(e.x0, e.z0, e.x1, e.z1, 0.03, 0xe0a000, 0.08, 0.8));
+  [0, 1, 2].forEach(i => add(box(e.x0 + 1, 0, e.z0 + 1 + i * 0.9, e.x0 + 4, 0.18 * (i + 1), e.z0 + 1.9 + i * 0.9, 0xe0a000, 0.3, 1)));
   const ramp = new THREE.BoxGeometry(8, 0.1, 2);
   ramp.rotateZ(0.09); ramp.translate(e.x0 + 10, 0.4, e.z0 + 2);
-  add(cad(ramp, 0xf0a030, 0.3, 1));
-  [0xe8665f, 0x3fae6a, 0x4a9de0, 0x8b5cc6].forEach((c, i) => add(rect(e.x0 + 2 + i * 4, e.z0 + 7, e.x0 + 5.5 + i * 4, e.z0 + 10.5, 0.05, c, 0.4, 1)));
-  add(label(['ERGOTHÉRAPIE EXTÉRIEURE', 'marches, rampe, sols variés'], (e.x0 + e.x1) / 2, 0.3, e.z0 + 14, 'lbl site'));
+  add(cad(ramp, 0xe0a000, 0.3, 1));
+  [0xc9ced4, 0x8fb77f, 0xc9ced4, 0x8fb77f].forEach((c, i) => add(rect(e.x0 + 2 + i * 4, e.z0 + 7, e.x0 + 5.5 + i * 4, e.z0 + 10.5, 0.05, c, 0.4, 1)));
 
   // ---- bungalows
   const B = SITE.bungalows;
@@ -156,7 +155,6 @@ export function buildSite() {
   tank(t.x0 + 8, t.z0 + 5.4, 0.9, 3);
   add(box(t.x1 - 0.1, 0, t.z0, t.x1, 3, t.z1, col('TECHNIQUE'), 0.2, 1));
   add(box(t.x0, 0, t.z1 - 0.1, t.x1, 3, t.z1, col('TECHNIQUE'), 0.2, 1));
-  add(label(['ZONE TECHNIQUE', 'groupes, transfo, gaz médicaux'], (t.x0 + t.x1) / 2, 4, t.z0 - 1.5, 'lbl site'));
 
   // ---- trees (seeded; kept low north of the façade so the sea view stays open)
   const rnd = mulberry32(7);
@@ -169,8 +167,8 @@ export function buildSite() {
     inRect(x, z, [SITE.ambCanopy.x0 - 2, SITE.ambCanopy.z0 - 2, SITE.ambCanopy.x1 + 2, SITE.ambCanopy.z1 + 2]) ||
     (Math.abs(Math.abs(x) - 36) < 3.2 && z > f.z0 - 3 && z < f.z1 + 3) ||
     ((Math.abs(z - f.z0) < 3.2 || Math.abs(z - f.z1) < 3.2) && x > f.x0 - 3 && x < f.x1 + 3);
-  const cones = [], trunks = [];
-  for (let tries = 0, placed = 0; tries < 4000 && placed < 55; tries++) {
+  const cones = [], trunks = [], treePts = [];
+  for (let tries = 0, placed = 0; tries < 4000 && placed < 30; tries++) {
     const x = -62 + rnd() * 124, z = -52 + rnd() * 104;
     if (!inPoly(x, z) || blocked(x, z)) continue;
     const north = z < ORIGIN.z && x > -45 && x < 45;
@@ -179,6 +177,7 @@ export function buildSite() {
     geo.translate(x, h / 2 + 0.8, z);
     cones.push(geo.toNonIndexed());
     trunks.push([x, 0, z], [x, 0.9, z]);
+    treePts.push([x, z, h]);
     placed++;
   }
   const trees = new THREE.Group();
@@ -188,7 +187,7 @@ export function buildSite() {
   // ---- neighbours (seeded boxes outside the plot and off the road)
   const houses = [];
   const nrnd = mulberry32(42);
-  for (let tries = 0; tries < 6000 && houses.length < 140; tries++) {
+  for (let tries = 0; tries < 6000 && houses.length < 80; tries++) {
     const x = -130 + nrnd() * 260, z = -110 + nrnd() * 230;
     const w = 7 + nrnd() * 10, dd = 7 + nrnd() * 10, h = 6 + nrnd() * 6;
     if (z > R.sw0 - 4 && z < R.z1 + 4) continue;
@@ -220,5 +219,5 @@ export function buildSite() {
   sun.visible = false;
   root.add(sun);
 
-  return { root, pv, sun, stats, neighbours, trees, bungalows: bungs };
+  return { root, pv, sun, stats, neighbours, trees, dims: siteDims, houses, treePts, bungalows: bungs };
 }

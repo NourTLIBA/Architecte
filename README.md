@@ -19,6 +19,7 @@ Puis ouvrir <http://localhost:5173>. Le serveur est nécessaire (importmap et mo
 - Barre de gauche : isoler un niveau (Toit à RDC) ou tout afficher.
 - Barre du bas : vues Ensemble, Plan, Mer, Sud, Est, Ouest, et Visite guidée en 9 étapes.
 - Boutons à droite : zoom, recentrer, rotation automatique, plein écran, affichage (étiquettes, cotes, soleil, voisinage, végétation, vue éclatée).
+- Plans 2D : section sous la simulation, 7 planches A3 (plan masse 1/500, cinq niveaux et toiture 1/200) avec trame, cotes, cartouche, échelle graphique et légende ; téléchargement en PDF vectoriel, par planche ou en lot. Le bouton « Plan 2D » de la simulation ouvre le niveau isolé.
 - Recherche : aller directement à une zone ou à un niveau.
 - Clic sur une zone : fiche avec surface, dimensions, flux et énergie.
 - Clavier : `1`–`6` niveaux, `0` tout, `E` éclaté, `Échap` fermer, flèches pendant la visite.
@@ -31,6 +32,7 @@ Puis ouvrir <http://localhost:5173>. Le serveur est nécessaire (importmap et mo
 | `src/data.js` | Toutes les données (niveaux, zones, site, énergie) et `validate()` |
 | `src/cad.js` | Helpers « remplissage + arêtes », lignes épaisses, étiquettes |
 | `src/site.js` | Parcelle, voirie, parkings, bungalows, jardins, voisinage, soleil |
+| `src/plan.js` | Planches 2D : primitives vectorielles, rendu SVG et écriture PDF |
 | `src/building.js` | 5 niveaux, façades, noyaux, toiture, cotes |
 | `src/ui.js`, `src/main.js` | Sections de la page, fiche de zone, recherche, visite, interactions |
 | `PLAN_3D_SIMULATION.md` | Plan de construction |

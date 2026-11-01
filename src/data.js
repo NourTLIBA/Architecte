@@ -18,25 +18,31 @@ export const ORIGIN = { x: -30, z: -38 }; // building local (bx, bz) = (0, 0) in
 export const LAYERS = {
   '0-STRUCTURE':     { aci: 7,  hex: 0x4a5058, desc: 'Dalles, poteaux, limite de parcelle' },
   'A-MURS':          { aci: 8,  hex: 0x8a929c, desc: 'Murs, façade sud' },
-  'A-VITRAGE':       { aci: 4,  hex: 0x2f9fd8, desc: 'Façade vitrée nord (mer)' },
-  'A-BRISE-SOLEIL':  { aci: 2,  hex: 0xe0a000, desc: 'Brise-soleil horizontaux et verticaux' },
-  'ZONES':           { aci: 0,  hex: 0x4a9de0, desc: 'Zones fonctionnelles (couleur par type)' },
-  'NOYAUX':          { aci: 6,  hex: 0x8b5cc6, desc: 'Ascenseurs, escaliers, noyaux' },
-  'TECHNIQUE':       { aci: 30, hex: 0xe8742a, desc: 'Locaux techniques, gaines, groupes' },
-  'ENERGIE':         { aci: 3,  hex: 0x2fa84f, desc: 'Photovoltaïque, solaire thermique, soleil' },
-  'VOIRIE':          { aci: 1,  hex: 0xd9453a, desc: 'Voies, accès ambulances' },
-  'SECURITE':        { aci: 1,  hex: 0xd9453a, desc: 'Voie pompiers (tirets)' },
-  'PARKING':         { aci: 9,  hex: 0x9aa0a8, desc: 'Stationnement' },
-  'PAYSAGE':         { aci: 94, hex: 0x5a9a4a, desc: 'Jardins, arbres' },
+  'A-VITRAGE':       { aci: 4,  hex: 0x7fb4d9, desc: 'Façade vitrée nord (mer)' },
+  'A-BRISE-SOLEIL':  { aci: 2,  hex: 0x9aa0a8, desc: 'Brise-soleil horizontaux et verticaux' },
+  'ZONES':           { aci: 0,  hex: 0x0058a3, desc: 'Zones fonctionnelles (couleur par famille)' },
+  'NOYAUX':          { aci: 6,  hex: 0x6e7680, desc: 'Ascenseurs, escaliers, noyaux' },
+  'TECHNIQUE':       { aci: 30, hex: 0x9aa0a8, desc: 'Locaux techniques, gaines, groupes' },
+  'ENERGIE':         { aci: 3,  hex: 0x1f9d8a, desc: 'Photovoltaïque, solaire thermique, soleil' },
+  'VOIRIE':          { aci: 1,  hex: 0xb4bac2, desc: 'Voies' },
+  'SECURITE':        { aci: 1,  hex: 0xd9453a, desc: 'Voie pompiers, accès ambulances' },
+  'PARKING':         { aci: 9,  hex: 0xb4bac2, desc: 'Stationnement' },
+  'PAYSAGE':         { aci: 94, hex: 0x8fb77f, desc: 'Jardins, arbres' },
   'BUNGALOW':        { aci: 5,  hex: 0x0058a3, desc: 'Bungalows thérapeutiques' },
   'COTATION':        { aci: 2,  hex: 0x0058a3, desc: 'Cotes et repères' },
-  'VOISINAGE':       { aci: 252, hex: 0xb4b9c0, desc: 'Bâtiments voisins' },
+  'VOISINAGE':       { aci: 252, hex: 0xc9ced4, desc: 'Bâtiments voisins' },
 };
 
+// four colour families keep the model readable
+export const GROUPS = [
+  { label: 'Soins et hospitalisation', color: 0x0058a3, types: ['soin', 'bloc', 'imagerie', 'hospit'] },
+  { label: 'Réadaptation et psychiatrie', color: 0xe0a000, types: ['reeduc', 'psy'] },
+  { label: 'Recherche et accueil', color: 0x1f9d8a, types: ['recherche', 'public'] },
+  { label: 'Support et technique', color: 0x9aa0a8, types: ['logistique', 'technique'] },
+];
 export const TYPE_COLORS = {
-  public: 0x4a9de0, soin: 0xe8665f, bloc: 0xd9453a, imagerie: 0x8b5cc6, hospit: 0x3fae6a,
-  reeduc: 0xf0a030, psy: 0xd9609e, recherche: 0x2f9fd8, logistique: 0xa8a070,
-  technique: 0xe8742a, circulation: 0x9aa0a8, noyau: 0x6b4bb5,
+  ...Object.fromEntries(GROUPS.flatMap(g => g.types.map(t => [t, g.color]))),
+  circulation: 0xc9ced4, noyau: 0x6e7680,
 };
 export const TYPE_LABELS = {
   public: 'Accueil / public', soin: 'Soins', bloc: 'Bloc / stérilisation', imagerie: 'Imagerie',
@@ -172,7 +178,7 @@ export const SITE = {
   seaZ: -132,
   lanes: [
     { id: 'voie-publique', name: 'Entrée publique + dépose-minute', layer: 'VOIRIE', rects: [[-10.5, -14, -4.5, 54], [-15, -14, 0, -10.5]] },
-    { id: 'voie-ambulance', name: 'Accès ambulances (distinct)', layer: 'VOIRIE', rects: [[48, -22, 54, 54], [38, -22, 54, -16]] },
+    { id: 'voie-ambulance', name: 'Accès ambulances (distinct)', layer: 'SECURITE', rects: [[48, -22, 54, 54], [38, -22, 54, -16]] },
     { id: 'voie-logistique', name: 'Accès logistique (livraisons, déchets)', layer: 'VOIRIE', rects: [[-37, -8, -31, 54], [-37, -14, -22, -8]] },
   ],
   fireLoop: { x0: -36, z0: -44, x1: 36, z1: -8, width: 4 },

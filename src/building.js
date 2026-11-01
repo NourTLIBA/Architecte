@@ -29,6 +29,13 @@ function buildLevel(lv, index) {
   const pick = [], labels = new THREE.Group();
   labels.visible = false;
   g.add(labels);
+  // overview shows a plain shell; zones and fine detail appear when the level is isolated
+  const zonesG = new THREE.Group(), detail = new THREE.Group();
+  zonesG.visible = false; detail.visible = false;
+  g.add(zonesG, detail);
+  const shell = box(X0, 0.3, Z0, X1, top, Z1, 0x8a929c, 0.1, 0.7);
+  shell.userData.fill.userData.levelIdx = index;
+  g.add(shell);
 
   const slab = box(X0, 0, Z0, X1, 0.3, Z1, col('0-STRUCTURE'), 0.1, 1);
   g.add(slab);
@@ -41,7 +48,7 @@ function buildLevel(lv, index) {
       : box(x0, 0.3, z0, x1, top, z1, TYPE_COLORS[z.type], z.type === 'noyau' ? 0.16 : 0.2, 1);
     m.userData.fill.userData.zone = z;
     m.userData.fill.userData.level = lv;
-    g.add(m);
+    zonesG.add(m);
     pick.push(m.userData.fill);
     if (z.type !== 'circulation' && !z.escape) {
       const name = z.core ? z.name.split(' — ')[0] : z.name;
@@ -52,13 +59,13 @@ function buildLevel(lv, index) {
   // columns on the 7.5 m grid
   const cols = [];
   for (let k = 0; k <= GRID.bays; k++) GRID.bz.forEach(bz => cols.push(boxGeo(wx(k * GRID.bay) - 0.25, 0.3, wz(bz) - 0.25, wx(k * GRID.bay) + 0.25, top, wz(bz) + 0.25)));
-  g.add(cad(mergeGeometries(cols), col('0-STRUCTURE'), 0.35, 0.55));
+  detail.add(cad(mergeGeometries(cols), col('0-STRUCTURE'), 0.35, 0.55));
 
   // north glass façade (sea) + mullions + sun fins
   g.add(wallXY(X0, X1, 0.3, top, Z0, col('A-VITRAGE'), 0.1, 0.6));
   const mull = [];
   for (let x = X0; x <= X1 + 0.01; x += 1.875) mull.push([x, 0.3, Z0], [x, top, Z0]);
-  g.add(segs(mull, col('A-VITRAGE'), 0.7));
+  detail.add(segs(mull, col('A-VITRAGE'), 0.7));
   g.add(box(X0, h - 0.5, Z0 - 1.2, X1, h - 0.4, Z0, col('A-BRISE-SOLEIL'), 0.3, 1));
   // east / west vertical fins (merged)
   const fins = [];
@@ -75,11 +82,11 @@ function buildLevel(lv, index) {
 
   // cores: lift cabs, stairs
   CORES.forEach(c => {
-    c.lifts.forEach(([bx, w]) => g.add(liftSymbol(bx, w, c.bz0 + 1.0, 2.7, 0.36)));
-    c.stairs.forEach(([bx, w]) => g.add(stairTreads(bx, bx + w, c.bz0 + 5.8, c.bz0 + 8.3, 0.36, true, col('NOYAUX'))));
+    c.lifts.forEach(([bx, w]) => detail.add(liftSymbol(bx, w, c.bz0 + 1.0, 2.7, 0.36)));
+    c.stairs.forEach(([bx, w]) => detail.add(stairTreads(bx, bx + w, c.bz0 + 5.8, c.bz0 + 8.3, 0.36, true, col('NOYAUX'))));
   });
-  g.add(stairTreads(0.3, 2.7, 0.4, 10.1, 0.36, false, col('NOYAUX')));
-  g.add(stairTreads(57.3, 59.7, 0.4, 10.1, 0.36, false, col('NOYAUX')));
+  detail.add(stairTreads(0.3, 2.7, 0.4, 10.1, 0.36, false, col('NOYAUX')));
+  detail.add(stairTreads(57.3, 59.7, 0.4, 10.1, 0.36, false, col('NOYAUX')));
 
   // patient rooms
   allZones(lv).filter(z => z.rooms).forEach(z => {
@@ -90,21 +97,21 @@ function buildLevel(lv, index) {
       if (k > 0) walls.push([wx(rx), 0.3, wz(z.bz0)], [wx(rx), top, wz(z.bz0)], [wx(rx), 0.3, wz(z.bz1)], [wx(rx), top, wz(z.bz1)],
         [wx(rx), top, wz(z.bz0)], [wx(rx), top, wz(z.bz1)]);
       const bz = north ? z.bz1 - 2 : z.bz0;
-      g.add(box(wx(rx + 0.15), 0.3, wz(bz), wx(rx + 2.15), 2.6, wz(bz + 2), TYPE_COLORS.hospit, 0.3, 0.9));
+      detail.add(box(wx(rx + 0.15), 0.3, wz(bz), wx(rx + 2.15), 2.6, wz(bz + 2), TYPE_COLORS.hospit, 0.3, 0.9));
       const dz = north ? z.bz1 : z.bz0;
       doors.push([wx(rx + 2.4), 0.35, wz(dz)], [wx(rx + 3.1), 0.35, wz(dz) + (north ? -0.7 : 0.7)]);
       for (let b = 0; b < z.perRoom; b++) {
         const bzz = north ? 3 : 18.5, bxx = rx + 0.7 + b * 1.2;
-        g.add(rect(wx(bxx), wz(bzz), wx(bxx + 0.9), wz(bzz + 2), 0.36, 0x4a5058, 0.12, 0.7));
+        detail.add(rect(wx(bxx), wz(bzz), wx(bxx + 0.9), wz(bzz + 2), 0.36, 0x4a5058, 0.12, 0.7));
       }
     }
-    g.add(segs(walls, TYPE_COLORS.hospit, 0.8));
-    g.add(segs(doors, col('A-VITRAGE'), 0.9));
+    detail.add(segs(walls, TYPE_COLORS.hospit, 0.8));
+    detail.add(segs(doors, col('A-VITRAGE'), 0.9));
   });
 
-  specials(lv, g, h, labels);
+  specials(lv, detail, h, labels);
 
-  return { id: lv.id, label: lv.label, index, elev: lv.elev, h, group: g, slab, labels, pick, lv };
+  return { id: lv.id, label: lv.label, index, elev: lv.elev, h, group: g, slab, labels, pick, lv, zonesG, detail, shell, shellFill: shell.userData.fill };
 }
 
 function specials(lv, g, h, labels) {
@@ -194,18 +201,18 @@ function buildRoof() {
   labels.add(label(['LOCAL TECHNIQUE', '2 groupes froid, 3 CTA'], wx(50), 4.2, wz(6.5), 'lbl'));
 
   // solar thermal collectors 4 × 15 m² = 60 m², tilted 30°
-  [[16, 14.8], [22, 14.8], [28, 14.8], [34, 14.8]].forEach(([bx, bz]) => {
+  [[16, 14.8], [22, 14.8], [38.5, 14.8], [44.5, 14.8]].forEach(([bx, bz]) => {
     const geo = new THREE.PlaneGeometry(5, 3);
     geo.rotateX(-Math.PI / 2); geo.rotateX(0.52);
     geo.translate(wx(bx + 2.5), 0.9, wz(bz + 1.5));
     pv.add(cad(geo, col('ENERGIE'), 0.3, 1, 0xe0a000));
   });
-  labels.add(label(['SOLAIRE THERMIQUE', '60 m²'], wx(26), 2.8, wz(19.5), 'lbl'));
+  labels.add(label(['SOLAIRE THERMIQUE', '60 m²'], wx(44), 2.8, wz(19.5), 'lbl'));
 
   // lift overruns
   CORES.forEach(c => g.add(box(wx(c.bx0), 0.3, wz(c.bz0), wx(c.bx1), 2.8, wz(c.bz1), col('NOYAUX'), 0.18, 1)));
 
-  return { id: 'TOIT', label: 'Toiture', index: LEVELS.length, elev: ROOF_ELEV, h: 0, group: g, slab, labels, pick: [], pv, lv: null };
+  return { id: 'TOIT', label: 'Toiture', index: LEVELS.length, elev: ROOF_ELEV, h: 0, group: g, slab, labels, pick: [], pv, lv: null, zonesG: new THREE.Group(), detail: new THREE.Group(), shell: null, shellFill: null };
 }
 
 function dimLine(a, b, off, text) {

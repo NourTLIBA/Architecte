@@ -199,3 +199,13 @@ table.tbl .n { text-align: right; white-space: nowrap; }
   .pop-panel { right: 0; top: 46px; }
   .brand { font-size: 15px; }
 }
+
+/* ---------- 2D plans */
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+.seg button { height: 36px; padding: 0 16px; border: 1px solid var(--hair); border-radius: 999px; background: #fff; font-size: 14px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
+.seg button:hover { background: var(--alt); color: var(--ink); }
+.seg button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.sheet { overflow-x: auto; border: 1px solid var(--hair); border-radius: 12px; background: #fff; box-shadow: var(--shadow); }
+.sheet svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.plan-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.dock button#plan2d-btn { color: var(--blue); }

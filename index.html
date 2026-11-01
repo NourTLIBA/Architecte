@@ -24,6 +24,7 @@
     <a href="#sim">Simulation</a>
     <a href="#projet">Projet</a>
     <a href="#niveaux">Niveaux</a>
+    <a href="#plans">Plans 2D</a>
     <a href="#energie">Énergie</a>
     <a href="#typologies">Typologies</a>
     <a href="#surfaces">Surfaces</a>
@@ -77,6 +78,7 @@
           <button data-view="east">Est</button>
           <button data-view="west">Ouest</button>
           <span class="sep" aria-hidden="true"></span>
+          <button id="plan2d-btn">Plan 2D</button>
           <button id="tour-btn" class="primary">Visite guidée</button>
         </div>
       </div>
@@ -112,11 +114,24 @@
     </div>
   </section>
 
-  <section id="energie" class="block">
+  <section id="plans" class="block">
+    <div class="wrap">
+      <h2>Plans 2D</h2>
+      <p class="lead">Un plan par niveau au 1/200, le plan de toiture et le plan masse au 1/500, au format A3. Chaque planche se télécharge en PDF vectoriel.</p>
+      <div class="seg" id="plan-tabs" role="tablist" aria-label="Planches"></div>
+      <div class="sheet" id="plan-view" role="tabpanel"></div>
+      <div class="plan-acts">
+        <button class="btn solid" id="pdf-one">Télécharger ce plan (PDF)</button>
+        <button class="btn" id="pdf-all">Télécharger les 7 planches (PDF)</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="energie" class="block alt">
     <div class="wrap" id="energie-body"></div>
   </section>
 
-  <section id="typologies" class="block alt">
+  <section id="typologies" class="block">
     <div class="wrap">
       <h2>Typologies</h2>
       <p class="lead">Les grands ensembles du projet, avec leurs surfaces. Choisissez-en un pour le voir dans la maquette.</p>
@@ -124,7 +139,7 @@
     </div>
   </section>
 
-  <section id="surfaces" class="block">
+  <section id="surfaces" class="block alt">
     <div class="wrap" id="surf-body"></div>
   </section>
 </main>

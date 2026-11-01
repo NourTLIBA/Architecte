@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
-import { ENERGY, TYPOLOGIES, TOUR, ORIGIN, validate } from './data.js';
+import { ENERGY, TYPOLOGIES, TOUR, ORIGIN, LEVELS, validate } from './data.js';
+import { SHEETS, getSheet, toSVG, toPDF } from './plan.js';
 import { buildSite } from './site.js';
 import { buildBuilding } from './building.js';
 import { setGhost, setLineResolution } from './cad.js';
@@ -62,6 +63,7 @@ const site = buildSite();
 const building = buildBuilding();
 scene.add(site.root, building.root);
 building.annot.visible = false; // dimensions and grid bubbles are opt-in
+site.dims.visible = false;
 const levels = building.levels; // 5 levels + roof
 
 // ---------------------------------------------------------------- render loop (on demand, only while visible)
@@ -129,16 +131,27 @@ const toSim = () => sim.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', 
 // ---------------------------------------------------------------- level isolation, explode
 let iso = null, explodeK = 0, selected = null;
 
+let xray = false; // shows every zone at once (used to flag zones from the energy list)
+function sync() {
+  levels.forEach(l => {
+    const zones = xray || iso === l.index;
+    l.zonesG.visible = zones;
+    l.detail.visible = iso === l.index;
+    if (l.shell) l.shell.visible = !zones;
+    l.labels.visible = iso === l.index;
+  });
+  dirty = true;
+}
+
 function applyIso(i) {
   clearSelection();
   iso = i;
   levels.forEach(l => {
     setGhost(l.group, i !== null && l.index !== i);
-    l.labels.visible = i !== null && l.index === i;
     if (l.slab) l.slab.visible = !(i !== null && l.index === i + 1);
   });
+  sync();
   ui.markLevel(i);
-  dirty = true;
 }
 
 function setExplode(on) {
@@ -204,7 +217,7 @@ function pulsePV() {
 }
 const TOGGLES = {
   labels: on => viewport.classList.toggle('no-labels', !on),
-  dims: on => { building.annot.visible = on; },
+  dims: on => { building.annot.visible = on; site.dims.visible = on; },
   sun: on => { site.sun.visible = on; if (on) pulsePV(); },
   neighbours: on => { site.neighbours.visible = on; },
   trees: on => { site.trees.visible = on; },
@@ -267,14 +280,41 @@ document.addEventListener('click', e => {
     const types = ENERGY.breakdown.find(b => b.id === en.dataset.energy).types;
     toSim(); applyIso(null); flyView('iso');
     setTimeout(() => {
+      xray = true; sync();
       const hit = levels.flatMap(l => l.pick).filter(f => types.includes(f.userData.zone.type));
-      hit.forEach(f => paint(f, true, 0x2fa84f, 0.5));
-      setTimeout(() => hit.forEach(f => paint(f, false)), 2200);
+      hit.forEach(f => paint(f, true, 0x1f9d8a, 0.55));
+      setTimeout(() => { hit.forEach(f => paint(f, false)); xray = false; sync(); }, 2400);
     }, reduced ? 0 : 600);
     return;
   }
   if (e.target.closest('[data-act="sun"]')) { toSim(); applyIso(null); flyView('iso'); setToggle('sun', true); }
 });
+
+// ---------------------------------------------------------------- 2D plans
+const planData = { houses: site.houses, treePts: site.treePts };
+const planTabs = $('#plan-tabs'), planView = $('#plan-view');
+let planId = 'masse';
+planTabs.innerHTML = SHEETS.map(sh => `<button role="tab" data-plan="${sh.id}">${sh.label}</button>`).join('');
+function showPlan(id) {
+  planId = id;
+  planTabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.plan === id)));
+  planView.innerHTML = toSVG(getSheet(id, planData));
+}
+planTabs.addEventListener('click', e => { const b = e.target.closest('[data-plan]'); if (b) showPlan(b.dataset.plan); });
+function download(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+const slug = id => (id === 'masse' ? 'plan-masse' : id === 'TOIT' ? 'toiture' : `niveau-${id.replace('+', '').toLowerCase()}`);
+$('#pdf-one').addEventListener('click', () => download(toPDF([getSheet(planId, planData)]), `neurosciences-${slug(planId)}.pdf`));
+$('#pdf-all').addEventListener('click', () => download(toPDF(SHEETS.map(sh => getSheet(sh.id, planData))), 'neurosciences-plans-complets.pdf'));
+$('#plan2d-btn').addEventListener('click', () => {
+  showPlan(iso === null ? 'masse' : iso < LEVELS.length ? LEVELS[iso].id : 'TOIT');
+  $('#plans').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+});
+showPlan('masse');
 
 // ---------------------------------------------------------------- pointer: pick
 const ray = new THREE.Raycaster();
@@ -296,7 +336,12 @@ renderer.domElement.addEventListener('pointerup', e => {
   const r = renderer.domElement.getBoundingClientRect();
   ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ndc, camera);
-  const hit = ray.intersectObjects(iso === null ? levels.flatMap(l => l.pick) : levels[iso].pick, false)[0];
+  if (iso === null) { // overview: a click on the building isolates that level
+    const hit = ray.intersectObjects(levels.filter(l => l.shellFill).map(l => l.shellFill), false)[0];
+    if (hit) { const i = hit.object.userData.levelIdx; applyIso(i); focusLevel(i); } else clearSelection();
+    return;
+  }
+  const hit = ray.intersectObjects(levels[iso].pick, false)[0];
   hit ? select(hit.object) : clearSelection();
 });
 
