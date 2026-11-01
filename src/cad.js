@@ -8,11 +8,13 @@ const lineMats = new Set();
 export const setLineResolution = (w, h) => lineMats.forEach(m => m.resolution.set(w, h));
 
 const tag = (m, kind, base) => { m.userData.kind = kind; m.userData.base = base; return m; };
+const INK = 0x1d1d1f;
+export const mixHex = (a, b, t) => new THREE.Color(a).lerp(new THREE.Color(b), t).getHex();
 export const fillMat = (hex, op) => tag(new THREE.MeshBasicMaterial({ color: hex, transparent: true, opacity: op, depthWrite: false, side: THREE.DoubleSide }), 'fill', op);
 export const edgeMat = (hex, op = 1) => tag(new THREE.LineBasicMaterial({ color: hex, transparent: true, opacity: op }), 'edge', op);
 
 // fill mesh + crisp edges: the base unit of the "shaded with edges" look
-export function cad(geo, hex, fillOp = 0.22, edgeOp = 1, edgeHex = hex) {
+export function cad(geo, hex, fillOp = 0.24, edgeOp = 1, edgeHex = mixHex(hex, INK, 0.28)) {
   const g = new THREE.Group();
   const fill = new THREE.Mesh(geo, fillMat(hex, fillOp));
   fill.renderOrder = 1;

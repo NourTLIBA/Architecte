@@ -95,7 +95,7 @@ function buildLevel(lv, index) {
       doors.push([wx(rx + 2.4), 0.35, wz(dz)], [wx(rx + 3.1), 0.35, wz(dz) + (north ? -0.7 : 0.7)]);
       for (let b = 0; b < z.perRoom; b++) {
         const bzz = north ? 3 : 18.5, bxx = rx + 0.7 + b * 1.2;
-        g.add(rect(wx(bxx), wz(bzz), wx(bxx + 0.9), wz(bzz + 2), 0.36, 0xffffff, 0.12, 0.7));
+        g.add(rect(wx(bxx), wz(bzz), wx(bxx + 0.9), wz(bzz + 2), 0.36, 0x4a5058, 0.12, 0.7));
       }
     }
     g.add(segs(walls, TYPE_COLORS.hospit, 0.8));
@@ -112,47 +112,47 @@ function specials(lv, g, h, labels) {
     // MRI in a Faraday cage, CT with lead lining
     g.add(box(wx(39), 0.3, wz(0.75), wx(46), 4.6, wz(9.75), col('NOYAUX'), 0.05, 0.9));
     labels.add(label(['IRM 1,5 T', 'cage de Faraday'], wx(42.5), 2.4, wz(5.25), 'lbl'));
-    g.add(box(wx(48), 0.3, wz(1.5), wx(54), 3.4, wz(8.5), 0xffff00, 0.05, 0.9));
+    g.add(box(wx(48), 0.3, wz(1.5), wx(54), 3.4, wz(8.5), 0xe0a000, 0.05, 0.9));
     const hatch = [];
     for (let k = -7; k <= 6; k += 0.8) {
       const u0 = Math.max(0, k), u1 = Math.min(6, 7 + k);
       hatch.push([wx(48 + u0), 0.36, wz(1.5 + u0 - k)], [wx(48 + u1), 0.36, wz(1.5 + u1 - k)]);
     }
-    g.add(segs(hatch, 0xffff00, 0.45));
+    g.add(segs(hatch, 0xe0a000, 0.45));
     labels.add(label(['Scanner', 'murs plombés'], wx(51), 2.0, wz(5), 'lbl'));
     // ambulance canopy on the east face
-    g.add(rect(wx(60), wz(14), wx(68), wz(24), 4.2, 0xff0000, 0.15, 1));
-    g.add(segs([[wx(68), 0.3, wz(14)], [wx(68), 4.2, wz(14)], [wx(68), 0.3, wz(24)], [wx(68), 4.2, wz(24)]], 0xff0000, 0.8));
+    g.add(rect(wx(60), wz(14), wx(68), wz(24), 4.2, 0xd9453a, 0.15, 1));
+    g.add(segs([[wx(68), 0.3, wz(14)], [wx(68), 4.2, wz(14)], [wx(68), 0.3, wz(24)], [wx(68), 4.2, wz(24)]], 0xd9453a, 0.8));
     labels.add(label('ACCÈS AMBULANCES', wx(64), 4.8, wz(19), 'sitelbl'));
   }
   if (lv.id === 'R+1') {
     [[23.5, 'Salle 1'], [35, 'Salle 2']].forEach(([bx, name]) => {
-      g.add(box(wx(bx), 0.3, wz(0.5), wx(bx + 8), h - 0.3, wz(6.1), 0xff3f3f, 0.06, 0.9));
-      g.add(segs(ringPairs(circlePts(wx(bx + 4), 0.36, wz(3.3), 0.9)), 0xffffff, 0.9));
-      g.add(segs([[wx(bx + 4) - 1.2, 0.36, wz(3.3)], [wx(bx + 4) + 1.2, 0.36, wz(3.3)], [wx(bx + 4), 0.36, wz(3.3) - 1.2], [wx(bx + 4), 0.36, wz(3.3) + 1.2]], 0xffffff, 0.9));
-      g.add(rect(wx(bx + 3.6), wz(2.3), wx(bx + 4.4), wz(4.3), 0.4, 0xffffff, 0.2, 0.9));
+      g.add(box(wx(bx), 0.3, wz(0.5), wx(bx + 8), h - 0.3, wz(6.1), 0xd9453a, 0.06, 0.9));
+      g.add(segs(ringPairs(circlePts(wx(bx + 4), 0.36, wz(3.3), 0.9)), 0x4a5058, 0.9));
+      g.add(segs([[wx(bx + 4) - 1.2, 0.36, wz(3.3)], [wx(bx + 4) + 1.2, 0.36, wz(3.3)], [wx(bx + 4), 0.36, wz(3.3) - 1.2], [wx(bx + 4), 0.36, wz(3.3) + 1.2]], 0x4a5058, 0.9));
+      g.add(rect(wx(bx + 3.6), wz(2.3), wx(bx + 4.4), wz(4.3), 0.4, 0x4a5058, 0.2, 0.9));
       labels.add(label(name, wx(bx + 4), 2.2, wz(3.3), 'lbl'));
     });
     g.add(poly([[wx(23), 0.38, wz(8.2)], [wx(44), 0.38, wz(8.2)]], col('A-VITRAGE'), { width: 1.5, dashed: true }));
-    g.add(arrow([wx(16), 0.4, wz(16.5)], [wx(22), 0.4, wz(16.5)], 0xff9f3f));
-    g.add(arrow([wx(23), 0.4, wz(20.5)], [wx(29), 0.4, wz(20.5)], 0x00ffff));
-    g.add(box(wx(22.2), 0.3, wz(14.5), wx(22.8), 2.4, wz(23), 0xffffff, 0.2, 0.8));
+    g.add(arrow([wx(16), 0.4, wz(16.5)], [wx(22), 0.4, wz(16.5)], 0xe8742a));
+    g.add(arrow([wx(23), 0.4, wz(20.5)], [wx(29), 0.4, wz(20.5)], 0x2f9fd8));
+    g.add(box(wx(22.2), 0.3, wz(14.5), wx(22.8), 2.4, wz(23), 0x4a5058, 0.2, 0.8));
     labels.add(label('SALE', wx(18.5), 1.6, wz(16.5), 'lbl'));
     labels.add(label('PROPRE', wx(26), 1.6, wz(20.5), 'lbl'));
   }
   if (lv.id === 'R+4') {
     // auditorium: stage on the sea side, raked seating
-    g.add(box(wx(3.5), 0.3, wz(0.4), wx(22), 0.6, wz(2.6), 0x3fbfff, 0.3, 1));
-    for (let k = 0; k < 8; k++) g.add(box(wx(3.5), 0.3, wz(3 + k * 0.94), wx(22), 0.3 + 0.2 * (k + 1), wz(3 + (k + 1) * 0.94), 0x3fbfff, 0.18, 0.8));
+    g.add(box(wx(3.5), 0.3, wz(0.4), wx(22), 0.6, wz(2.6), 0x2f9fd8, 0.3, 1));
+    for (let k = 0; k < 8; k++) g.add(box(wx(3.5), 0.3, wz(3 + k * 0.94), wx(22), 0.3 + 0.2 * (k + 1), wz(3 + (k + 1) * 0.94), 0x2f9fd8, 0.18, 0.8));
     // railing around the accessible terrace
     const y = 1.1, r = [[52.5, 13.5], [60, 13.5], [60, 24], [52.5, 24], [52.5, 13.5]].map(([bx, bz]) => [wx(bx), y, wz(bz)]);
-    g.add(poly(r, 0xffffff, { width: 1.5 }));
+    g.add(poly(r, 0x4a5058, { width: 1.5 }));
     const posts = [];
     for (let k = 0; k < r.length - 1; k++) {
       const a = r[k], b = r[k + 1], n = Math.ceil(Math.hypot(b[0] - a[0], b[2] - a[2]) / 1.5);
       for (let i = 0; i <= n; i++) { const t = i / n, px = a[0] + (b[0] - a[0]) * t, pz = a[2] + (b[2] - a[2]) * t; posts.push([px, 0.3, pz], [px, y, pz]); }
     }
-    g.add(segs(posts, 0xffffff, 0.6));
+    g.add(segs(posts, 0x4a5058, 0.6));
   }
 }
 
@@ -198,7 +198,7 @@ function buildRoof() {
     const geo = new THREE.PlaneGeometry(5, 3);
     geo.rotateX(-Math.PI / 2); geo.rotateX(0.52);
     geo.translate(wx(bx + 2.5), 0.9, wz(bz + 1.5));
-    pv.add(cad(geo, col('ENERGIE'), 0.3, 1, 0xffff00));
+    pv.add(cad(geo, col('ENERGIE'), 0.3, 1, 0xe0a000));
   });
   labels.add(label(['SOLAIRE THERMIQUE', '60 m²'], wx(26), 2.8, wz(19.5), 'lbl'));
 
@@ -237,7 +237,7 @@ function buildAnnotations() {
     lines.push([X0 - 1.3, 0.04, wz(bz)], [X1 + 1.5, 0.04, wz(bz)]);
     g.add(label(String(i + 1), X0 - 3.6, 0.3, wz(bz), 'bubble'));
   });
-  g.add(segs(lines, 0xffffff, 0.25));
+  g.add(segs(lines, 0x4a5058, 0.25));
   return g;
 }
 
@@ -248,5 +248,5 @@ export function buildBuilding() {
   const root = new THREE.Group();
   levels.forEach(l => root.add(l.group));
   root.add(annot);
-  return { root, levels, roofPV: levels[levels.length - 1].pv };
+  return { root, levels, annot, roofPV: levels[levels.length - 1].pv };
 }

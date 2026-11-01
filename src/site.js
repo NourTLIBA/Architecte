@@ -37,11 +37,11 @@ export function buildSite() {
   const plotGeo = new THREE.ShapeGeometry(shape);
   plotGeo.rotateX(-Math.PI / 2);
   plotGeo.translate(0, 0.01, 0);
-  const plot = cad(plotGeo, 0x3a4a3a, 0.12, 0);
+  const plot = cad(plotGeo, 0xcfe3c4, 0.5, 0);
   add(plot);
   const cx = SITE.polygon.reduce((s, p) => s + p[0], 0) / SITE.polygon.length;
   const cz = SITE.polygon.reduce((s, p) => s + p[1], 0) / SITE.polygon.length;
-  add(label(['LIMITE PARCELLE', `${polyArea(SITE.polygon).toFixed(0)} m²`], cx, 0.2, cz + 10, 'lbl'));
+  add(label(['LIMITE PARCELLE', `${polyArea(SITE.polygon).toFixed(0)} m²`], cx, 0.2, cz + 10, 'lbl site'));
   SITE.polygon.forEach((p, i) => {
     const q = SITE.polygon[(i + 1) % SITE.polygon.length];
     add(label(`${Math.hypot(q[0] - p[0], q[1] - p[1]).toFixed(1)}`, (p[0] + q[0]) / 2, 0.3, (p[1] + q[1]) / 2, 'dimtxt'));
@@ -49,17 +49,17 @@ export function buildSite() {
 
   // ---- road
   const R = SITE.road;
-  add(rect(R.x0, R.sw0, R.x1, R.sw1, 0.02, 0x9ea7b3, 0.16, 0.8));
-  add(rect(R.x0, R.z0, R.x1, R.z1, 0.02, 0x606a78, 0.22, 0.9));
+  add(rect(R.x0, R.sw0, R.x1, R.sw1, 0.02, 0xc9ced4, 0.5, 0.6));
+  add(rect(R.x0, R.z0, R.x1, R.z1, 0.02, 0xb4bac2, 0.55, 0.7));
   add(poly([[R.x0, 0.03, (R.z0 + R.z1) / 2], [R.x1, 0.03, (R.z0 + R.z1) / 2]], 0xffffff, { width: 1, dashed: true, opacity: 0.6 }));
   add(label('VOIE D’ACCÈS — SUD', -60, 0.3, (R.z0 + R.z1) / 2 + 0.2, 'sitelbl'));
 
   // ---- sea
   const seaFront = SITE.seaZ;
-  add(rect(-320, seaFront - 220, 320, seaFront, 0.0, 0x1f6fb5, 0.14, 0.7));
+  add(rect(-320, seaFront - 220, 320, seaFront, 0.0, 0x1f6fb5, 0.22, 0.4));
   const hatch = [];
   for (let z = seaFront - 4; z > seaFront - 220; z -= 8) hatch.push([-320, 0.01, z], [320, 0.01, z]);
-  add(segs(hatch, 0x2f8fe0, 0.25));
+  add(segs(hatch, 0x5aa5e0, 0.35));
   add(rect(-320, seaFront, 320, seaFront + 14, 0.0, 0xd8c27a, 0.1, 0.5));
   add(label('MER MÉDITERRANÉE', 0, 0.3, seaFront - 24, 'sealbl'));
 
@@ -68,10 +68,10 @@ export function buildSite() {
   SITE.lanes.forEach(l => {
     l.rects.forEach(r => { rectsAll.push(r); add(rect(r[0], r[1], r[2], r[3], 0.04, col(l.layer), 0.16, 0.9)); });
   });
-  add(arrow([-7.5, 0.06, 40], [-7.5, 0.06, -9], 0xffffff, 0.8));
+  add(arrow([-7.5, 0.06, 40], [-7.5, 0.06, -9], 0x4a5058, 0.8));
   add(arrow([51, 0.06, 40], [51, 0.06, -19], 0xff0000));
   add(arrow([51, 0.06, -19], [39, 0.06, -19], 0xff0000));
-  add(arrow([-34, 0.06, 40], [-34, 0.06, -8], 0xffffff, 0.6));
+  add(arrow([-34, 0.06, 40], [-34, 0.06, -8], 0x4a5058, 0.6));
   add(label('ENTRÉE PUBLIQUE', -7.5, 0.3, 52, 'sitelbl'));
   add(label('AMBULANCES', 51, 0.3, 52, 'sitelbl'));
   add(label('LOGISTIQUE', -34, 0.3, 52, 'sitelbl'));
@@ -121,17 +121,17 @@ export function buildSite() {
     loop.push([1 + Math.cos(t) * 26, 0.06, -43.8 + Math.sin(t) * 2.8 + Math.sin(t * 5) * 0.5]);
   }
   add(poly(loop, col('PAYSAGE'), { width: 2.5 }));
-  add(label(['JARDIN THÉRAPEUTIQUE', 'parcours sensoriel'], 1, 0.3, -43.8, 'lbl'));
+  add(label(['JARDIN THÉRAPEUTIQUE', 'parcours sensoriel'], 1, 0.3, -43.8, 'lbl site'));
 
   // ---- outdoor ergotherapy
   const e = SITE.ergoOut;
-  add(rect(e.x0, e.z0, e.x1, e.z1, 0.03, 0xffbf3f, 0.08, 0.8));
-  [0, 1, 2].forEach(i => add(box(e.x0 + 1, 0, e.z0 + 1 + i * 0.9, e.x0 + 4, 0.18 * (i + 1), e.z0 + 1.9 + i * 0.9, 0xffbf3f, 0.3, 1)));
+  add(rect(e.x0, e.z0, e.x1, e.z1, 0.03, 0xf0a030, 0.08, 0.8));
+  [0, 1, 2].forEach(i => add(box(e.x0 + 1, 0, e.z0 + 1 + i * 0.9, e.x0 + 4, 0.18 * (i + 1), e.z0 + 1.9 + i * 0.9, 0xf0a030, 0.3, 1)));
   const ramp = new THREE.BoxGeometry(8, 0.1, 2);
   ramp.rotateZ(0.09); ramp.translate(e.x0 + 10, 0.4, e.z0 + 2);
-  add(cad(ramp, 0xffbf3f, 0.3, 1));
-  [0xff7f7f, 0x7fff7f, 0x7fbfff, 0xbf7fff].forEach((c, i) => add(rect(e.x0 + 2 + i * 4, e.z0 + 7, e.x0 + 5.5 + i * 4, e.z0 + 10.5, 0.05, c, 0.4, 1)));
-  add(label(['ERGOTHÉRAPIE EXTÉRIEURE', 'marches, rampe, sols variés'], (e.x0 + e.x1) / 2, 0.3, e.z0 + 14, 'lbl'));
+  add(cad(ramp, 0xf0a030, 0.3, 1));
+  [0xe8665f, 0x3fae6a, 0x4a9de0, 0x8b5cc6].forEach((c, i) => add(rect(e.x0 + 2 + i * 4, e.z0 + 7, e.x0 + 5.5 + i * 4, e.z0 + 10.5, 0.05, c, 0.4, 1)));
+  add(label(['ERGOTHÉRAPIE EXTÉRIEURE', 'marches, rampe, sols variés'], (e.x0 + e.x1) / 2, 0.3, e.z0 + 14, 'lbl site'));
 
   // ---- bungalows
   const B = SITE.bungalows;
@@ -143,7 +143,7 @@ export function buildSite() {
     add(rect(x0, z0 + B.size, x0 + B.size, z0 + B.size + B.terrace, 0.1, col('BUNGALOW'), 0.15, 0.9));
     bungs.push({ n, x0, z0 }); n++;
   }));
-  add(label(['BUNGALOWS THÉRAPEUTIQUES', `${bungs.length} × ${B.area} m²`], -47, 6, -50.6, 'lbl'));
+  add(label(['BUNGALOWS THÉRAPEUTIQUES', `${bungs.length} × ${B.area} m²`], -47, 6, -50.6, 'lbl site'));
   add(poly([[-47, 0.07, -46], [-47, 0.07, -13.2], [-30, 0.07, -13.2]], col('PAYSAGE'), { width: 2, dashed: true }));
 
   // ---- technical yard
@@ -156,7 +156,7 @@ export function buildSite() {
   tank(t.x0 + 8, t.z0 + 5.4, 0.9, 3);
   add(box(t.x1 - 0.1, 0, t.z0, t.x1, 3, t.z1, col('TECHNIQUE'), 0.2, 1));
   add(box(t.x0, 0, t.z1 - 0.1, t.x1, 3, t.z1, col('TECHNIQUE'), 0.2, 1));
-  add(label(['ZONE TECHNIQUE', 'groupes, transfo, gaz médicaux'], (t.x0 + t.x1) / 2, 4, t.z0 - 1.5, 'lbl'));
+  add(label(['ZONE TECHNIQUE', 'groupes, transfo, gaz médicaux'], (t.x0 + t.x1) / 2, 4, t.z0 - 1.5, 'lbl site'));
 
   // ---- trees (seeded; kept low north of the façade so the sea view stays open)
   const rnd = mulberry32(7);
@@ -181,8 +181,9 @@ export function buildSite() {
     trunks.push([x, 0, z], [x, 0.9, z]);
     placed++;
   }
-  add(cad(mergeGeometries(cones), col('PAYSAGE'), 0.12, 0.6));
-  add(segs(trunks, col('PAYSAGE'), 0.9));
+  const trees = new THREE.Group();
+  trees.add(cad(mergeGeometries(cones), col('PAYSAGE'), 0.3, 0.6), segs(trunks, col('PAYSAGE'), 0.9));
+  root.add(trees);
 
   // ---- neighbours (seeded boxes outside the plot and off the road)
   const houses = [];
@@ -196,7 +197,7 @@ export function buildSite() {
     if (houses.some(o => Math.abs(o.x - x) < (o.w + w) / 2 + 2 && Math.abs(o.z - z) < (o.d + dd) / 2 + 2)) continue;
     houses.push({ x, z, w, d: dd, h });
   }
-  add(cad(mergeGeometries(houses.map(o => boxGeo(o.x - o.w / 2, 0, o.z - o.d / 2, o.x + o.w / 2, o.h, o.z + o.d / 2))), col('VOISINAGE'), 0.18, 0.7));
+  const neighbours = add(cad(mergeGeometries(houses.map(o => boxGeo(o.x - o.w / 2, 0, o.z - o.d / 2, o.x + o.w / 2, o.h, o.z + o.d / 2))), col('VOISINAGE'), 0.22, 0.4));
 
   // ---- sun path (energy view)
   const sun = new THREE.Group();
@@ -219,5 +220,5 @@ export function buildSite() {
   sun.visible = false;
   root.add(sun);
 
-  return { root, pv, sun, stats, bungalows: bungs };
+  return { root, pv, sun, stats, neighbours, trees, bungalows: bungs };
 }

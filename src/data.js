@@ -16,27 +16,27 @@ export const GRID = { bay: 7.5, bays: 8, width: 60, depth: 24, bz: [0, 10.5, 13.
 export const ORIGIN = { x: -30, z: -38 }; // building local (bx, bz) = (0, 0) in world metres
 
 export const LAYERS = {
-  '0-STRUCTURE':     { aci: 7,  hex: 0xffffff, desc: 'Dalles, poteaux, limite de parcelle' },
-  'A-MURS':          { aci: 8,  hex: 0x9ea7b3, desc: 'Murs, façade sud' },
-  'A-VITRAGE':       { aci: 4,  hex: 0x00ffff, desc: 'Façade vitrée nord (mer)' },
-  'A-BRISE-SOLEIL':  { aci: 2,  hex: 0xffff00, desc: 'Brise-soleil horizontaux et verticaux' },
-  'ZONES':           { aci: 0,  hex: 0x7fbfff, desc: 'Zones fonctionnelles (couleur par type)' },
-  'NOYAUX':          { aci: 6,  hex: 0xff00ff, desc: 'Ascenseurs, escaliers, noyaux' },
-  'TECHNIQUE':       { aci: 30, hex: 0xff7f00, desc: 'Locaux techniques, gaines, groupes' },
-  'ENERGIE':         { aci: 3,  hex: 0x00ff00, desc: 'Photovoltaïque, solaire thermique, soleil' },
-  'VOIRIE':          { aci: 1,  hex: 0xff0000, desc: 'Voies, accès ambulances' },
-  'SECURITE':        { aci: 1,  hex: 0xff0000, desc: 'Voie pompiers (tirets)' },
-  'PARKING':         { aci: 9,  hex: 0xc0c0c0, desc: 'Stationnement' },
-  'PAYSAGE':         { aci: 94, hex: 0x3f7f00, desc: 'Jardins, arbres' },
-  'BUNGALOW':        { aci: 5,  hex: 0x4d7cff, desc: 'Bungalows thérapeutiques' },
-  'COTATION':        { aci: 2,  hex: 0xffff00, desc: 'Cotes et repères' },
-  'VOISINAGE':       { aci: 252, hex: 0x5a5a5a, desc: 'Bâtiments voisins' },
+  '0-STRUCTURE':     { aci: 7,  hex: 0x4a5058, desc: 'Dalles, poteaux, limite de parcelle' },
+  'A-MURS':          { aci: 8,  hex: 0x8a929c, desc: 'Murs, façade sud' },
+  'A-VITRAGE':       { aci: 4,  hex: 0x2f9fd8, desc: 'Façade vitrée nord (mer)' },
+  'A-BRISE-SOLEIL':  { aci: 2,  hex: 0xe0a000, desc: 'Brise-soleil horizontaux et verticaux' },
+  'ZONES':           { aci: 0,  hex: 0x4a9de0, desc: 'Zones fonctionnelles (couleur par type)' },
+  'NOYAUX':          { aci: 6,  hex: 0x8b5cc6, desc: 'Ascenseurs, escaliers, noyaux' },
+  'TECHNIQUE':       { aci: 30, hex: 0xe8742a, desc: 'Locaux techniques, gaines, groupes' },
+  'ENERGIE':         { aci: 3,  hex: 0x2fa84f, desc: 'Photovoltaïque, solaire thermique, soleil' },
+  'VOIRIE':          { aci: 1,  hex: 0xd9453a, desc: 'Voies, accès ambulances' },
+  'SECURITE':        { aci: 1,  hex: 0xd9453a, desc: 'Voie pompiers (tirets)' },
+  'PARKING':         { aci: 9,  hex: 0x9aa0a8, desc: 'Stationnement' },
+  'PAYSAGE':         { aci: 94, hex: 0x5a9a4a, desc: 'Jardins, arbres' },
+  'BUNGALOW':        { aci: 5,  hex: 0x0058a3, desc: 'Bungalows thérapeutiques' },
+  'COTATION':        { aci: 2,  hex: 0x0058a3, desc: 'Cotes et repères' },
+  'VOISINAGE':       { aci: 252, hex: 0xb4b9c0, desc: 'Bâtiments voisins' },
 };
 
 export const TYPE_COLORS = {
-  public: 0x7fbfff, soin: 0xff7f7f, bloc: 0xff3f3f, imagerie: 0xbf7fff, hospit: 0x7fff7f,
-  reeduc: 0xffbf3f, psy: 0xff7fdf, recherche: 0x3fbfff, logistique: 0xbfbf7f,
-  technique: 0xff9f3f, circulation: 0x606a78, noyau: 0xff00ff,
+  public: 0x4a9de0, soin: 0xe8665f, bloc: 0xd9453a, imagerie: 0x8b5cc6, hospit: 0x3fae6a,
+  reeduc: 0xf0a030, psy: 0xd9609e, recherche: 0x2f9fd8, logistique: 0xa8a070,
+  technique: 0xe8742a, circulation: 0x9aa0a8, noyau: 0x6b4bb5,
 };
 export const TYPE_LABELS = {
   public: 'Accueil / public', soin: 'Soins', bloc: 'Bloc / stérilisation', imagerie: 'Imagerie',
@@ -118,6 +118,19 @@ export const LEVELS = [
     Z('r4-biblio', 'Bibliothèque / coworking', 'recherche', 37.5, 52.5, 13.5, 24),
     Z('r4-terrasse', 'Terrasse accessible', 'public', 52.5, 60, 13.5, 24),
   ] },
+];
+
+// guided tour stations: a camera view or a level to isolate
+export const TOUR = [
+  { title: 'Le site', text: 'Un terrain de 11 500 m². La mer est au nord, la voie d’accès au sud.', view: 'iso' },
+  { title: 'Accès et stationnement', text: 'Entrée publique au centre, ambulances à l’est, livraisons à l’ouest.', view: 'parking' },
+  { title: 'Bungalows thérapeutiques', text: 'Six unités de 64 m² dans le jardin ouest.', view: 'bungalows' },
+  { title: 'Rez-de-chaussée', text: 'Accueil, consultations, urgences et imagerie IRM et scanner.', level: 0 },
+  { title: 'Niveau 1', text: 'Bloc opératoire, soins intensifs et stérilisation.', level: 1 },
+  { title: 'Niveau 2', text: 'Trente-six lits dans des chambres tournées vers la mer.', level: 2 },
+  { title: 'Niveau 3', text: 'Rééducation, ergothérapie, psychiatrie et gériatrie.', level: 3 },
+  { title: 'Niveau 4', text: 'Recherche, auditorium de 150 places et terrasse panoramique.', level: 4 },
+  { title: 'Toiture', text: 'Panneaux photovoltaïques, solaire thermique et locaux techniques.', level: 5 },
 ];
 
 export const ROOF_ELEV = LEVELS.reduce((s, l) => s + l.h, 0); // 21.8

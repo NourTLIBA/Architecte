@@ -1,6 +1,6 @@
 # Architecte
 
-Maquette 3D en style AutoCAD du **Centre International des Neurosciences** (Algérie, littoral) : hôpital monobloc R+4, plan masse, énergie et typologies. Une seule page, three.js via importmap, sans build.
+Maquette 3D minimaliste du **Centre International des Neurosciences** (Algérie, littoral) : hôpital monobloc R+4, plan masse, énergie et typologies. Une seule page, three.js via importmap, sans build.
 
 > Maquette d'intention. Ce n'est ni un plan coté, ni un document cadastral, ni un plan réglementaire. Les valeurs non fixées par la synthèse du projet sont des hypothèses de travail, à valider.
 
@@ -12,14 +12,16 @@ python -m http.server 5173
 
 Puis ouvrir <http://localhost:5173>. Le serveur est nécessaire (importmap et modules ES).
 
-## Commandes
+## Utilisation
 
-- Souris : clic gauche orbite, molette zoom au curseur, clic milieu ou droit déplacement.
-- Barre de niveaux : isole TOITURE, R+4 à RDC ; SITE affiche tout.
-- Vues : ISO SE, PLAN (HAUT), FAÇADE MER, ViewCube en haut à droite ; ÉCLATÉ écarte les niveaux.
-- Clic sur une zone : propriétés (type, surface, dimensions, flux, énergie).
-- Onglets : Accueil, Énergie (barres cliquables, course du soleil), Typologies, Surfaces.
-- Clavier : `1`–`6` niveaux, `0` site, `E` éclaté, `Échap` désélectionner.
+- Simulation en haut de page, présentation du projet, niveaux, énergie, typologies et surfaces en dessous.
+- Glisser pour tourner. Cliquer dans la scène active la molette pour zoomer (la page reste défilable sinon).
+- Barre de gauche : isoler un niveau (Toit à RDC) ou tout afficher.
+- Barre du bas : vues Ensemble, Plan, Mer, Sud, Est, Ouest, et Visite guidée en 9 étapes.
+- Boutons à droite : zoom, recentrer, rotation automatique, plein écran, affichage (étiquettes, cotes, soleil, voisinage, végétation, vue éclatée).
+- Recherche : aller directement à une zone ou à un niveau.
+- Clic sur une zone : fiche avec surface, dimensions, flux et énergie.
+- Clavier : `1`–`6` niveaux, `0` tout, `E` éclaté, `Échap` fermer, flèches pendant la visite.
 
 ## Fichiers
 
@@ -30,7 +32,7 @@ Puis ouvrir <http://localhost:5173>. Le serveur est nécessaire (importmap et mo
 | `src/cad.js` | Helpers « remplissage + arêtes », lignes épaisses, étiquettes |
 | `src/site.js` | Parcelle, voirie, parkings, bungalows, jardins, voisinage, soleil |
 | `src/building.js` | 5 niveaux, façades, noyaux, toiture, cotes |
-| `src/ui.js`, `src/main.js` | Panneaux, ViewCube, ligne de commande, interactions |
+| `src/ui.js`, `src/main.js` | Sections de la page, fiche de zone, recherche, visite, interactions |
 | `PLAN_3D_SIMULATION.md` | Plan de construction |
 
 Orientation : mer au nord (haut de `terrain.jpeg`), voie d'accès au sud. 1 unité = 1 m, +X est, −Z nord.
